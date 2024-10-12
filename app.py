@@ -59,8 +59,11 @@ while run:
             elif event.key == pygame.K_SPACE:
                 grid.select_grid_tile()
             elif event.key == pygame.K_LSHIFT:
-                grid.get_diag(0,0, 'right')
-                # grid.get_v_lines(5,0,'right', 'top')
+                grid.get_line(0,0,9,0)
+                grid.get_line(0,0,0,9)
+                grid.get_line(0,0,9,9)
+                grid.get_line(9,0,9,9)
+                grid.get_line(0,9,9,0)
 
             
             norm_X, norm_Y = grid.validate_pos(norm_X, norm_Y)

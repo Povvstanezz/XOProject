@@ -82,32 +82,30 @@ class GameGrid:
         return self.TILES_COORD_LIST
     
 
-    def get_diag(self, x, y, direction):
-        top = -1
-        bottom = +1
-        left = -1
-        right = +1   
-        end_coord = [self.TILES[0], self.TILES[1]]
-        start_coord = [x,y]
-
-        if direction == 'left':
-            direct = left
-        elif direction == 'right':
-            direct = right
+    def get_line(self, start_x, start_y, end_x, end_y):
+        tiles_list = [[start_x, start_y]]
 
         loop = True
 
         while loop:
-            if start_coord[0] <= 0 or start_coord[1] <= 0:
+            dir_x = -1 if start_x > end_x else 1
+            dir_y = -1 if start_y > end_y else 1
+
+            if start_x != end_x:
+                start_x += dir_x
+
+            if start_y != end_y:
+                    start_y += dir_y
+
+            if start_x == end_x and start_y == end_y:
                 loop = False
 
-            tile = self.norm_tiles_coord(start_coord[0], start_coord[1])
-            self.SELECTED_TILES.append(tile)
-            start_coord[0] += direct_x
-            start_coord[1] += 1
+            tiles_list.append([start_x, start_y])
 
-            if start_coord[0] == end_coord[0] or start_coord[1] == end_coord[1]:
-                loop = False
+        for tile in tiles_list:
+            stile = self.norm_tiles_coord(tile[0], tile[1])
+            self.SELECTED_TILES.append(stile)
+        pass
 
 
     def validate_pos(self, x,y):
@@ -182,5 +180,5 @@ class GameGrid:
     
 if __name__ == '__main__':
     grid = GameGrid()
-    grid.get_v_lines(3,5)
+    grid.get_line(0,0,5,7)
     grid.update()
