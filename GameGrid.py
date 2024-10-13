@@ -3,18 +3,14 @@ class GameGrid:
     def __init__(self, surface_size=(300,300), tiles=(10,10), grid_size=(200,200)):
         self.SURFACE_SIZE = None
         self.GRID_SIZE = None
-
         self.LINES = None
         self.STEP_SIZE_X = None
         self.STEP_SIZE_Y = None
         self.START_X = None
         self.START_Y = None
-
         self.COORD_LINES_X = list()
         self.COORD_LINES_Y = list()
-
         self.TILES_COORD_LIST = list()
-
         self.SELECTED_TILES = list()
         self.CURSOR = [0,0]
         self.CURSOR_MARKER = list()
@@ -22,6 +18,7 @@ class GameGrid:
         self.TILES = tiles
         self.GRID_SIZE = grid_size
         self.SURFACE_SIZE = surface_size
+        self.TILES_DATA_LIST = list()
 
         self.grid_calculate()   
         self.get_cursor(self.CURSOR)
@@ -81,13 +78,13 @@ class GameGrid:
         tiles_data = self.TILES_COORD_LIST
         return self.TILES_COORD_LIST
     
-
     def get_line(self, start_x, start_y, end_x, end_y):
         tiles_list = [[start_x, start_y]]
 
         loop = True
 
         while loop:
+
             dir_x = -1 if start_x > end_x else 1
             dir_y = -1 if start_y > end_y else 1
 
@@ -102,10 +99,7 @@ class GameGrid:
 
             tiles_list.append([start_x, start_y])
 
-        for tile in tiles_list:
-            stile = self.norm_tiles_coord(tile[0], tile[1])
-            self.SELECTED_TILES.append(stile)
-        pass
+        return tiles_list
 
 
     def validate_pos(self, x,y):
@@ -158,6 +152,18 @@ class GameGrid:
         else:
             self.CURSOR_TILE[0](tiles[x][y])
 
+    def mark_pos(self, x, y, data):
+        tiles = self.get_tiles()
+        x,y = self.validate_pos(x,y)
+        if [x,y,data] not in self.TILES_DATA_LIST:
+            self.TILES_DATA_LIST.append([x,y,data])
+        else:
+            self.TILES_DATA_LIST.remove([x,y,data])
+        pass
+
+    def get_tiles_data(self):
+        return self.TILES_DATA_LIST
+
     def select_grid_tile(self):
         x, y = self.CURSOR
         tile = self.norm_tiles_coord(x ,y)
@@ -180,5 +186,4 @@ class GameGrid:
     
 if __name__ == '__main__':
     grid = GameGrid()
-    grid.get_line(0,0,5,7)
     grid.update()
