@@ -78,9 +78,13 @@ class GameGrid:
         tiles_data = self.TILES_COORD_LIST
         return self.TILES_COORD_LIST
     
+    
     def get_line(self, start_x, start_y, end_x, end_y):
         tiles_list = [[start_x, start_y]]
 
+        start_x, start_y = self.validate_pos(start_x, start_y)
+        end_x, end_y = self.validate_pos(end_x, end_y)
+        print(end_x, end_y)
         loop = True
 
         while loop:
@@ -103,11 +107,13 @@ class GameGrid:
 
 
     def validate_pos(self, x,y):
+        print(self.TILES)
         if x >= self.TILES[0]:
             x = self.TILES[0]-1
         elif x < 0:
             x = 0
-        elif y >= self.TILES[1]:
+
+        if y >= self.TILES[1]:
             y = self.TILES[1]-1
         elif y < 0:
             y = 0
@@ -178,6 +184,7 @@ class GameGrid:
         self.GRID_DATA.update({'cursor': self.CURSOR})
         self.GRID_DATA.update({'cursor_marker': self.CURSOR_MARKER})
         self.GRID_DATA.update({'selected_tiles': self.SELECTED_TILES})
+        self.GRID_DATA.update({'tiles_grid_data': self.TILES_DATA_LIST})
 
         return self.GRID_DATA
     

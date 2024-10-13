@@ -6,7 +6,7 @@ pygame.init()
 
 screen = pygame.display.set_mode((640,480))
 bgcolor = (179, 180, 181)
-tiles = (5, 8)
+tiles = (5, 6)
 
 grid_surface = pygame.Surface(screen.get_size())
 grid_surface.fill(bgcolor)
@@ -30,14 +30,14 @@ def draw_cursor():
 
 
 def draw_data():
-    data_list = grid.get_tiles_data()
+    data_list = DRAW_DATA['tiles_grid_data']
     for i in data_list:
         if i[-1] == 'X':
             tile = grid.norm_tiles_coord(i[0],i[1])
             pygame.draw.line(grid_surface,(0,0,0),tile[0], tile[2])
-            pygame.draw.line(grid_surface,(0,0,0),tile[1], tile[3])
-            
+            pygame.draw.line(grid_surface,(0,0,0),tile[1], tile[3])            
     pass
+
 
 run = True
 
@@ -51,7 +51,6 @@ while run:
         select_tiles()
         screen.blit(grid_surface, (0,0))
         grid_surface.fill(bgcolor)
-
         draw_data()
 
         if event.type == pygame.MOUSEMOTION:
@@ -70,11 +69,7 @@ while run:
                 norm_Y += 1
             elif event.key == pygame.K_SPACE:
                 grid.select_grid_tile()
-            elif event.key == pygame.K_LSHIFT:
-                diag_1 = grid.get_line(0,0,9,9)
-                print(diag_1)
 
-            
             norm_X, norm_Y = grid.validate_pos(norm_X, norm_Y)
             cursor_marker = grid.norm_tiles_coord(norm_X, norm_Y)
             grid.set_cursor_pos(norm_X, norm_Y)
