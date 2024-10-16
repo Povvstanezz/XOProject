@@ -20,10 +20,18 @@ class GameGrid:
         self.SURFACE_SIZE = surface_size
         self.TILES_DATA_LIST = list()
 
+        self.clear_tiles_data_list()
         self.grid_calculate()   
         self.get_cursor(self.CURSOR)
         self.update()
         pass
+    
+    def clear_tiles_data_list(self):
+        # (10, 10)
+        for col in range(self.TILES[1]):
+            x_list = ['empty' for i in range(self.TILES[0])]
+            self.TILES_DATA_LIST.append(x_list)
+
 
     def grid_calculate(self):
         self.LINES = (self.TILES[0] + 1 , self.TILES[1] + 1)
@@ -57,7 +65,7 @@ class GameGrid:
                 coord_list_x.append( [[x+1, y + 1],
                         [x + self.STEP_SIZE_X - 1, y + 1],
                         [x + self.STEP_SIZE_X - 1, y + self.STEP_SIZE_Y - 1],
-                        [x + 1, y + self.STEP_SIZE_Y - 1]] )
+                        [x + 1, y + self.STEP_SIZE_Y - 1]])
 
             coord_list.append(coord_list_x)
             coord_list_x = []
@@ -84,7 +92,6 @@ class GameGrid:
 
         start_x, start_y = self.validate_pos(start_x, start_y)
         end_x, end_y = self.validate_pos(end_x, end_y)
-        print(end_x, end_y)
         loop = True
 
         while loop:
@@ -103,11 +110,12 @@ class GameGrid:
 
             tiles_list.append([start_x, start_y])
 
+            # self.SELECTED_TILES.append(self.norm_tiles_coord(start_x, start_y))
+
         return tiles_list
 
 
     def validate_pos(self, x,y):
-        print(self.TILES)
         if x >= self.TILES[0]:
             x = self.TILES[0]-1
         elif x < 0:
@@ -159,14 +167,12 @@ class GameGrid:
             self.CURSOR_TILE[0](tiles[x][y])
 
     def mark_pos(self, x, y, data):
-        tiles = self.get_tiles()
         x,y = self.validate_pos(x,y)
-        if [x,y,data] not in self.TILES_DATA_LIST:
-            self.TILES_DATA_LIST.append([x,y,data])
+        if self.TILES_DATA_LIST[x][y] != 'empty':
+            pass
         else:
-            self.TILES_DATA_LIST.remove([x,y,data])
-        pass
-
+            self.TILES_DATA_LIST[x][y] = data
+    
     def get_tiles_data(self):
         return self.TILES_DATA_LIST
 
@@ -178,6 +184,18 @@ class GameGrid:
         else:
             self.SELECTED_TILES.append(tile)
         pass
+    
+
+    # Проверяем позиции на data
+    def check_line(self, tiles, data):
+        count = 0
+        for tile in tiles:
+            if self.TILES_DATA_LIST[tile[0]][tile[1]] == data:
+                continue
+            else:
+                return False
+
+        return True
         
     def update(self):
         self.GRID_DATA.update({'lines': self.COORD_LINES_X + self.COORD_LINES_Y})
