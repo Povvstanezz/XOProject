@@ -187,6 +187,7 @@ class GameGrid:
     
 
     # Проверяем позиции на data
+    # Если все позиции в tiles с одной data то возвращает True иначе False
     def check_line(self, tiles, data):
         count = 0
         for tile in tiles:

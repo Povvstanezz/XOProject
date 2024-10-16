@@ -47,15 +47,14 @@ def draw_data():
 
 run = True
 count = 1
-
+# Создаем диагональ
 diag = grid.get_line(0,0,9,9)
+
 while run:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-
-
 
         draw_lines(DRAW_DATA['lines'])
         select_tiles()
@@ -64,12 +63,8 @@ while run:
         draw_data()
 
 
-        #Проверяем и меняем здесь
-        data = '0' if count % 2 == 0 else "X"
-        if grid.check_line(diag, data):
-            print('Win')
-        else:
-            print('More')
+
+
         
 
         if event.type == pygame.MOUSEMOTION:
@@ -97,8 +92,14 @@ while run:
         
         if event.type == pygame.MOUSEBUTTONDOWN:
             tile = grid.get_cursor(pygame.mouse.get_pos())
-            # ставим Х или 0 переключаем счетчик
+
+            data = '0' if count % 2 == 0 else "X"
             grid.mark_pos(tile[0], tile[1], data)
+
+            if grid.check_line(diag, data):
+                print('Win')
+            else:
+                print('More')
             count +=1
 
     grid.update()
