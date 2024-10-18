@@ -48,8 +48,16 @@ def draw_data():
 run = True
 count = 1
 # Создаем диагональ
-diag = grid.get_line(0,0,9,9)
+# делаем ее зависимой от количества клеток - (tiles)
+left_diag = grid.get_line(0, 0, (tiles[0] - 1), (tiles[1] - 1))
+right_diag = grid.get_line((tiles[0] - 1), 0, 0, (tiles[1] - 1))
 
+# получаем горизонтальную и вертикальную линию исходя из нажатой клетки - (tile)
+def draw_HV_lines(tile):
+    horizontal_line = grid.get_line(0, tile[1], (tiles[0] -1), tile[1])
+    vertical_line = grid.get_line(tile[0], 0, tile[0], (tiles[0] - 1))
+    return horizontal_line, vertical_line
+                                  
 while run:
 
     for event in pygame.event.get():
@@ -92,15 +100,25 @@ while run:
         
         if event.type == pygame.MOUSEBUTTONDOWN:
             tile = grid.get_cursor(pygame.mouse.get_pos())
-
             data = '0' if count % 2 == 0 else "X"
             grid.mark_pos(tile[0], tile[1], data)
 
-            if grid.check_line(diag, data):
+            if grid.check_line(left_diag, data):
                 print('Win')
-            else:
-                print('More')
+               
+            # я решил не переделывать класс под крестики нолики
+            # и по этому написал ещё одну функцию
+            if grid.check_line(right_diag, data):
+                print('Win')
+                
+            hor_line, ver_line = draw_HV_lines(tile) #функция получения гор. и вер. линий
+            if grid.check_line(hor_line, data):
+                print('Win')
+            
+            if grid.check_line(ver_line, data):
+                print('Win')
             count +=1
+            
 
     grid.update()
     draw_cursor()
