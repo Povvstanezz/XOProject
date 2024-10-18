@@ -1,13 +1,13 @@
 class GameGrid:
 
-    def __init__(self, surface_size=(300,300), tiles=(10,10), grid_size=(200,200)):
+    def __init__(self, start_x=0, start_y=0, tiles=(10,10), grid_size=(200,200)):
         self.SURFACE_SIZE = None
         self.GRID_SIZE = None
         self.LINES = None
         self.STEP_SIZE_X = None
         self.STEP_SIZE_Y = None
-        self.START_X = None
-        self.START_Y = None
+        self.START_X = start_x
+        self.START_Y = start_y
         self.COORD_LINES_X = list()
         self.COORD_LINES_Y = list()
         self.TILES_COORD_LIST = list()
@@ -17,11 +17,12 @@ class GameGrid:
         self.GRID_DATA = dict()
         self.TILES = tiles
         self.GRID_SIZE = grid_size
-        self.SURFACE_SIZE = surface_size
+        # self.SURFACE_SIZE = surface_size
         self.TILES_DATA_LIST = list()
 
         self.clear_tiles_data_list()
-        self.grid_calculate()   
+        self.grid_calculate()
+
         self.get_cursor(self.CURSOR)
         self.update()
         pass
@@ -34,24 +35,22 @@ class GameGrid:
 
 
     def grid_calculate(self):
+
         self.LINES = (self.TILES[0] + 1 , self.TILES[1] + 1)
-        self.STEP_SIZE_X = self.GRID_SIZE[0]/(self.TILES[0])
-        self.STEP_SIZE_Y = self.GRID_SIZE[1]/(self.TILES[1])
-
+        self.STEP_SIZE_X = int(self.GRID_SIZE[0]/(self.TILES[0])) 
+        self.STEP_SIZE_Y = int(self.GRID_SIZE[1]/(self.TILES[1]))
+        
         grid_size_x, grid_size_y = self.GRID_SIZE
-
-        self.START_X = self.SURFACE_SIZE[0]/2 - grid_size_x/2
-        self.START_Y = self.SURFACE_SIZE[1]/2 - grid_size_y/2
 
         st_x, st_y = self.START_X, self.START_Y
 
         #Calculate lines
         for line in range(self.LINES[0]):
-            self.COORD_LINES_X.append([st_x, self.START_Y, st_x , self.START_Y + grid_size_y])
+            self.COORD_LINES_X.append([st_x, self.START_Y, st_x , self.START_Y + (self.STEP_SIZE_Y*self.TILES[1])])
             st_x += self.STEP_SIZE_X
 
         for line in range(self.LINES[1]):
-            self.COORD_LINES_Y.append([self.START_X, st_y, self.START_X + grid_size_x, st_y])
+            self.COORD_LINES_Y.append([self.START_X, st_y, (self.STEP_SIZE_X*self.TILES[0]), st_y])
             st_y += self.STEP_SIZE_Y
 
         #Calculate tiles
@@ -69,7 +68,7 @@ class GameGrid:
 
             coord_list.append(coord_list_x)
             coord_list_x = []
-
+            
         self.TILES_COORD_LIST = coord_list
 
     def get_lines(self):
@@ -189,7 +188,7 @@ class GameGrid:
     # Проверяем позиции на data
     # Если все позиции в tiles с одной data то возвращает True иначе False
     def check_line(self, tiles, data):
-        count = 0
+        # count = 0
         for tile in tiles:
             if self.TILES_DATA_LIST[tile[0]][tile[1]] == data:
                 continue
