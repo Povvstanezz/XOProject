@@ -27,12 +27,17 @@ class GameGrid:
         self.update()
         pass
     
-    def clear_tiles_data_list(self):
-        # (10, 10)
-        for col in range(self.TILES[1]):
-            x_list = ['empty' for i in range(self.TILES[0])]
-            self.TILES_DATA_LIST.append(x_list)
+    # def clear_tiles_data_list(self):
+    #     # (10, 10)
+    #     for col in range(self.TILES[1]):
+    #         x_list = ['empty' for i in range(self.TILES[0])]
+    #         self.TILES_DATA_LIST.append(x_list)
 
+    def clear_tiles_data_list(self):
+        # tiles = (3,5)
+        for row in range(self.TILES[0]):
+            y_list = ['empty' for i in range(self.TILES[1])]
+            self.TILES_DATA_LIST.append(y_list)
 
     def grid_calculate(self):
 
@@ -171,6 +176,7 @@ class GameGrid:
             pass
         else:
             self.TILES_DATA_LIST[x][y] = data
+            return True
     
     def get_tiles_data(self):
         return self.TILES_DATA_LIST
