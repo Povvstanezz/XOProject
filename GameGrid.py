@@ -176,7 +176,6 @@ class GameGrid:
             pass
         else:
             self.TILES_DATA_LIST[x][y] = data
-            return True
     
     def get_tiles_data(self):
         return self.TILES_DATA_LIST

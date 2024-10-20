@@ -1,5 +1,7 @@
 import pygame
 import pygame.draw_py
+import random
+
 
 from GameGrid import GameGrid
 
@@ -10,11 +12,12 @@ bgcolor = (179, 180, 181)
 screen.fill(bgcolor)
 tiles = (3,3)
 
-DRAW_DATA = grid.update()
+
 
 # Создаем Surfaces
 
 grid = GameGrid(tiles=(tiles), grid_size=(400,400))
+DRAW_DATA = grid.update()
 grid_surface = pygame.Surface((450,450))
 grid_surface.fill(bgcolor)
 cursor_surface = pygame.Surface((grid.STEP_SIZE_X, grid.STEP_SIZE_Y))
@@ -60,7 +63,7 @@ def draw_data():
     pass
 
 
-def check(tile):
+def check(tile, data):
     # Получаем диагонали
     left_diag = grid.get_line(0, 0, (tiles[0] - 1), (tiles[1] - 1))
     right_diag = grid.get_line((tiles[0] - 1), 0, 0, (tiles[1] - 1))
@@ -69,34 +72,56 @@ def check(tile):
     vertical_line = grid.get_line(tile[0], 0, tile[0], (tiles[0] - 1))
 
     #Все линии собрать в один список и проверить в цикле
-    if grid.check_line(left_diag, data):
-        print('Win')
-        win_check(p1, p2, data)
-
-    if grid.check_line(right_diag, data):
-        print('Win')
-        win_check(p1, p2, data)
-
-    hor_line, ver_line = draw_HV_lines(tile) #функция получения гор. и вер. линий
-    if grid.check_line(hor_line, data):
-        print('Win')
-        win_check(p1, p2, data)
-
-    if grid.check_line(ver_line, data):
-        print('Win')
-        win_check(p1, p2, data)
+    line_list = [left_diag, right_diag, horizontal_line, vertical_line]
+    for line in line_list:
+        if grid.check_line(line, data):
+            print('Win')
     pass
 
-# Этот функционал в Check
-def draw_HV_lines(tile):
-    horizontal_line = grid.get_line(0, tile[1], (tiles[0] -1), tile[1])
-    vertical_line = grid.get_line(tile[0], 0, tile[0], (tiles[0] - 1))
-    return horizontal_line, vertical_line
+# Двигаем курсор клавишами
+def move_cursor(x,y):
+    x, y = grid.validate_pos(x, y)
+    cursor_marker = grid.norm_tiles_coord(x, y)
+    grid.set_cursor_pos(x, y)
+    grid.set_cursor_marker(cursor_marker)
+    pass
 
+
+# Получаем список игроков
+def get_players():
+    player_data = ['X','0']
+    # Берем рандомное число 0 или 1 для первого игрока
+    dice = random.randint(0, 1)
+
+    # Вычисляем для второго игрока
+    # Если для первого 1 то для второго 0 и наоборот
+
+    if dice > 0:
+        dice2 = dice - 1
+    else:
+        dice2 = dice + 1
+
+    # Записываем все в список [['player1, 'X'], ['player2', '0']]
+
+    game_list = [['player1', player_data[dice]],['player2', player_data[dice2]]]
+    return game_list
+
+
+# Получаем список с данными игроков(Возможно нужно убрать отсюда)
+players = get_players()
+
+#Ход игрока
+def player_turn(pos):
+    # Отмечаем позицию
+    mark = grid.mark_pos(pos[0],pos[1], players[0][1])
+
+    # Проверяем на выигрыш
+    check(pos, players[0][1])
+
+    pass
 
 run = True
-count = 1
-
+win = False
 while run:
 
     for event in pygame.event.get():
@@ -107,38 +132,29 @@ while run:
             mouse_pos = pygame.mouse.get_pos()
             mouse_pos = [mouse_pos[0]-50, mouse_pos[1]-50]
             grid.get_cursor(mouse_pos)
-        
+            
         norm_X, norm_Y = DRAW_DATA['cursor']
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                norm_X -= 1
+                move_cursor(norm_X - 1, norm_Y)
             elif event.key == pygame.K_RIGHT:
-                norm_X += 1
+                move_cursor(norm_X + 1, norm_Y)
             elif event.key == pygame.K_UP:
-                norm_Y -= 1
+                move_cursor(norm_X, norm_Y - 1)
             elif event.key == pygame.K_DOWN:
-                norm_Y += 1
+                move_cursor(norm_X,norm_Y + 1)
             elif event.key == pygame.K_SPACE:
                 pass
            
-            norm_X, norm_Y = grid.validate_pos(norm_X, norm_Y)
-            cursor_marker = grid.norm_tiles_coord(norm_X, norm_Y)
-            grid.set_cursor_pos(norm_X, norm_Y)
-            grid.set_cursor_marker(cursor_marker)
-           
         if event.type == pygame.MOUSEBUTTONDOWN:
-            
             mouse_pos = pygame.mouse.get_pos()
             mouse_pos = [mouse_pos[0]-50, mouse_pos[1]-50]
             tile = grid.get_cursor(mouse_pos)
 
-            data = '0' if count % 2 == 0 else "X"
-            if not grid.mark_pos(tile[0], tile[1], data):
-                count += 1
+            if not win:
+                player_turn(tile)
 
-            count +=1
-
-    grid.update()
     draw_data()
+    grid.update()       
     pygame.display.update()
