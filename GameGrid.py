@@ -45,7 +45,7 @@ class GameGrid:
         self.STEP_SIZE_X = int(self.GRID_SIZE[0]/(self.TILES[0])) 
         self.STEP_SIZE_Y = int(self.GRID_SIZE[1]/(self.TILES[1]))
         
-        grid_size_x, grid_size_y = self.GRID_SIZE
+        # grid_size_x, grid_size_y = self.GRID_SIZE
 
         st_x, st_y = self.START_X, self.START_Y
 

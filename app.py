@@ -72,7 +72,11 @@ def check(tile, data):
     vertical_line = grid.get_line(tile[0], 0, tile[0], (tiles[0] - 1))
 
     #Все линии собрать в один список и проверить в цикле
-    line_list = [left_diag, right_diag, horizontal_line, vertical_line]
+    line_list = list()
+    line_list.append(right_diag)
+    line_list.append(left_diag)
+    line_list.append(horizontal_line)
+    line_list.append(vertical_line)
 
     for line in line_list:
         if grid.check_line(line, data):
