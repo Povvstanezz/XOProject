@@ -173,9 +173,10 @@ class GameGrid:
     def mark_pos(self, x, y, data):
         x,y = self.validate_pos(x,y)
         if self.TILES_DATA_LIST[x][y] != 'empty':
-            pass
+            return False
         else:
             self.TILES_DATA_LIST[x][y] = data
+            return True
     
     def get_tiles_data(self):
         return self.TILES_DATA_LIST

@@ -73,9 +73,11 @@ def check(tile, data):
 
     #Все линии собрать в один список и проверить в цикле
     line_list = [left_diag, right_diag, horizontal_line, vertical_line]
+
     for line in line_list:
         if grid.check_line(line, data):
             print('Win')
+    
     pass
 
 # Двигаем курсор клавишами
@@ -106,17 +108,28 @@ def get_players():
     game_list = [['player1', player_data[dice]],['player2', player_data[dice2]]]
     return game_list
 
-
 # Получаем список с данными игроков(Возможно нужно убрать отсюда)
 players = get_players()
 
+player_index = 0
+
 #Ход игрока
-def player_turn(pos):
+def player_turn(pos):    
     # Отмечаем позицию
-    mark = grid.mark_pos(pos[0],pos[1], players[0][1])
+    global player_index
+
+    mark = grid.mark_pos(pos[0],pos[1], players[player_index][1])
+
+    check(pos, players[player_index][1])
+
+    if mark:
+        if player_index == 1:
+            player_index -= 1
+        else:
+            player_index += 1
 
     # Проверяем на выигрыш
-    check(pos, players[0][1])
+    
 
     pass
 
