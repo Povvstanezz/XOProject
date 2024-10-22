@@ -4,6 +4,7 @@ import random
 
 
 from GameGrid import GameGrid
+from gui import Button
 
 pygame.init()
 
@@ -12,25 +13,30 @@ bgcolor = (179, 180, 181)
 screen.fill(bgcolor)
 tiles = (3,3)
 
-
-
 # Создаем Surfaces
-
 grid = GameGrid(tiles=(tiles), grid_size=(400,400))
 DRAW_DATA = grid.update()
-grid_surface = pygame.Surface((450,450))
+grid_surface = pygame.Surface((401,401))
 grid_surface.fill(bgcolor)
 cursor_surface = pygame.Surface((grid.STEP_SIZE_X, grid.STEP_SIZE_Y))
+
+start_game_screen_surface = pygame.Surface(screen.get_size())
+start_game_screen_surface.fill((100, 100, 100))
+# start_game_screen_surface.set_alpha(120)
 
 def surfaces_update():
     main_surface = screen
     main_surface.blit(grid_surface, (50,50))
     grid_surface.fill(bgcolor)
-    
     cursor_marker = DRAW_DATA['cursor_marker']
     x1 = cursor_marker[0][0] - 1
     y1 = cursor_marker[0][1] - 1
     grid_surface.blit(cursor_surface, (x1,y1))
+    screen.blit(start_game_screen_surface, (0,0))
+    btn = Button().get_button_surface()
+    start_game_screen_surface.blit(btn, (screen.get_size()[0]/2-btn.get_size()[0]/2, \
+                                         screen.get_size()[1]/2-btn.get_size()[1]/2))
+    btn.check_mouse <- True False
     pass
 
 #Всё отлично
@@ -63,24 +69,36 @@ def draw_data():
     pass
 
 
+def delete_duplicates(input_list):
+    unique_list = list()
+    for data in input_list:
+        if data not in unique_list:
+            unique_list.append(data)
+    return unique_list
+
+
 def check(tile, data):
     # Получаем диагонали
     left_diag = grid.get_line(0, 0, (tiles[0] - 1), (tiles[1] - 1))
     right_diag = grid.get_line((tiles[0] - 1), 0, 0, (tiles[1] - 1))
 
-    horizontal_line = grid.get_line(0, tile[1], (tiles[0] -1), tile[1])
+    horizontal_line = grid.get_line(0, tile[1], (tiles[0] - 1), tile[1])
     vertical_line = grid.get_line(tile[0], 0, tile[0], (tiles[0] - 1))
 
     #Все линии собрать в один список и проверить в цикле
-    line_list = list()
+    line_list = []
+
     line_list.append(right_diag)
     line_list.append(left_diag)
     line_list.append(horizontal_line)
     line_list.append(vertical_line)
 
+    line_list = delete_duplicates(line_list)
+
     for line in line_list:
         if grid.check_line(line, data):
-            print('Win')
+            print(f'Win: {line}')
+            return True
     
     pass
 
@@ -91,7 +109,6 @@ def move_cursor(x,y):
     grid.set_cursor_pos(x, y)
     grid.set_cursor_marker(cursor_marker)
     pass
-
 
 # Получаем список игроков
 def get_players():
@@ -114,8 +131,13 @@ def get_players():
 
 # Получаем список с данными игроков(Возможно нужно убрать отсюда)
 players = get_players()
-
 player_index = 0
+
+#Выполняем при выигрыше
+
+def win_game(player):
+    print(f'Player:{player[0]} Win game!')
+    pass
 
 #Ход игрока
 def player_turn(pos):    
@@ -124,21 +146,28 @@ def player_turn(pos):
 
     mark = grid.mark_pos(pos[0],pos[1], players[player_index][1])
 
-    check(pos, players[player_index][1])
+    if check(pos, players[player_index][1]):
+        win_game(players[player_index])
 
     if mark:
         if player_index == 1:
             player_index -= 1
         else:
             player_index += 1
-
-    # Проверяем на выигрыш
-    
-
     pass
 
 run = True
 win = False
+game_state = False
+
+
+def get_start_game_screen():
+    surfaces_update()
+    print('!')
+
+if not game_state:
+    get_start_game_screen()
+
 while run:
 
     for event in pygame.event.get():
