@@ -6,7 +6,7 @@ class Button():
         self.button_surface = pygame.Surface(size)
         self.button_surface.fill(bg_color)
 
-        self.button_text = pygame.font.Font('XOProject/Arima.ttf', 34)
+        self.button_text = pygame.font.Font('Arima.ttf', 34)
         self.text_surface = self.button_text.render(text, False, text_color)
         self.border_data = self.button_surface.get_rect()
         
@@ -18,14 +18,17 @@ class Button():
         self.text_pos = (self.btn_surface_size[0]/2 - self.text_size[0]/2, self.btn_surface_size[1]/2 - \
                          self.text_size[1]/2)
         
-        print(self.btn_surface_size)
-        print(self.text_size)
-        print(self.text_pos)
+        # print(self.btn_surface_size)
+        # print(self.text_size)
+        # print(self.text_pos)
 
         self.button_surface.blit(self.text_surface, (self.text_pos))
     
     def get_button_surface(self):
         return self.button_surface
+    
+    def click(self):
+        pass
 
 if __name__ == '__main__':
     btn = Button()

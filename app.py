@@ -24,8 +24,10 @@ start_game_screen_surface = pygame.Surface(screen.get_size())
 start_game_screen_surface.fill((100, 100, 100))
 
 btn = Button().get_button_surface()
-btn_pos = screen.get_size()[0]/2-btn.get_size()[0]/2, screen.get_size()[1]/2-btn.get_size()[1]/2
-# start_game_screen_surface.set_alpha(120)
+btn_start_pos = screen.get_size()[0]/2-btn.get_size()[0]/2, screen.get_size()[1]/2-btn.get_size()[1]/2
+btn_size = btn.get_size()
+
+btn_end_pos = btn_start_pos[0] + btn_size[0], btn_start_pos[1] + btn_size[1]
 
 def surfaces_update():
     main_surface = screen
@@ -36,7 +38,7 @@ def surfaces_update():
     y1 = cursor_marker[0][1] - 1
     grid_surface.blit(cursor_surface, (x1,y1))
     screen.blit(start_game_screen_surface, (0,0))
-    start_game_screen_surface.blit(btn, btn_pos)
+    start_game_screen_surface.blit(btn, btn_start_pos)
     pass
 
 #Всё отлично
@@ -201,6 +203,11 @@ while run:
 
             if not win:
                 player_turn(tile)
+            
+            mouse_pos = pygame.mouse.get_pos()
+            if mouse_pos[0] > btn_start_pos[0] and mouse_pos[0] < btn_end_pos[0] and \
+                mouse_pos[1] > btn_start_pos[1] and mouse_pos[1] < btn_end_pos[1]:
+                    print('Click!')
 
     draw_data()
     grid.update()       
