@@ -211,8 +211,9 @@ while run:
             start_game = btn.on_mouse_motion(btn_start_pos, mouse_pos)
             if start_game:
                 print(True)
+           
+                
  
-
     draw_data()
     grid.update()       
     pygame.display.update()
