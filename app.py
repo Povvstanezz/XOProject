@@ -180,7 +180,7 @@ while run:
             mouse_pos = pygame.mouse.get_pos()
             mouse_pos = [mouse_pos[0]-50, mouse_pos[1]-50]
             grid.get_cursor(mouse_pos)
-
+            
             
         norm_X, norm_Y = DRAW_DATA['cursor']
 
