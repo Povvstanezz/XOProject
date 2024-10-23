@@ -5,7 +5,7 @@ class Button():
         pygame.font.init()
         self.button_surface = pygame.Surface(size)
         self.button_surface.fill(bg_color)
-
+        self.size = size
         self.button_text = pygame.font.Font('Arima.ttf', 34)
         self.text_surface = self.button_text.render(text, False, text_color)
         self.border_data = self.button_surface.get_rect()
@@ -23,7 +23,13 @@ class Button():
         # print(self.text_pos)
 
         self.button_surface.blit(self.text_surface, (self.text_pos))
-    
+        
+    def on_mouse_motion(self, btn_start_pos, mouse_pos):
+        btn_end_pos = btn_start_pos[0] + self.size[0], btn_start_pos[1] + self.size[1]   
+        if mouse_pos[0] > btn_start_pos[0] and mouse_pos[0] < btn_end_pos[0] and \
+            mouse_pos[1] > btn_start_pos[1] and mouse_pos[1] < btn_end_pos[1]:
+            return True
+        
     def get_button_surface(self):
         return self.button_surface
     

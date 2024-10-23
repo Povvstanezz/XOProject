@@ -22,12 +22,12 @@ cursor_surface = pygame.Surface((grid.STEP_SIZE_X, grid.STEP_SIZE_Y))
 
 start_game_screen_surface = pygame.Surface(screen.get_size())
 start_game_screen_surface.fill((100, 100, 100))
+btn_surface = Button().get_button_surface()
+btn = Button()
+btn_start_pos = screen.get_size()[0]/2-btn_surface.get_size()[0]/2, screen.get_size()[1]/2-btn_surface.get_size()[1]/2
+# btn_size = btn.get_size()
 
-btn = Button().get_button_surface()
-btn_start_pos = screen.get_size()[0]/2-btn.get_size()[0]/2, screen.get_size()[1]/2-btn.get_size()[1]/2
-btn_size = btn.get_size()
-
-btn_end_pos = btn_start_pos[0] + btn_size[0], btn_start_pos[1] + btn_size[1]
+# btn_end_pos = btn_start_pos[0] + btn_size[0], btn_start_pos[1] + btn_size[1]
 
 def surfaces_update():
     main_surface = screen
@@ -38,7 +38,7 @@ def surfaces_update():
     y1 = cursor_marker[0][1] - 1
     grid_surface.blit(cursor_surface, (x1,y1))
     screen.blit(start_game_screen_surface, (0,0))
-    start_game_screen_surface.blit(btn, btn_start_pos)
+    start_game_screen_surface.blit(btn_surface, btn_start_pos)
     pass
 
 #Всё отлично
@@ -169,6 +169,8 @@ def get_start_game_screen():
 
 if not game_state:
     get_start_game_screen()
+    
+start_game = False
 
 while run:
 
@@ -205,9 +207,11 @@ while run:
                 player_turn(tile)
             
             mouse_pos = pygame.mouse.get_pos()
-            if mouse_pos[0] > btn_start_pos[0] and mouse_pos[0] < btn_end_pos[0] and \
-                mouse_pos[1] > btn_start_pos[1] and mouse_pos[1] < btn_end_pos[1]:
-                    print('Click!')
+    
+            start_game = btn.on_mouse_motion(btn_start_pos, mouse_pos)
+            if start_game:
+                print(True)
+ 
 
     draw_data()
     grid.update()       
