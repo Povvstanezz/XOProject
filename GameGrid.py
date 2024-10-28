@@ -212,6 +212,10 @@ class GameGrid:
 
         return self.GRID_DATA
     
+    def clear(self):
+        self.GRID_DATA.update({'tiles_grid_data': None})
+
+
     def __str__(self):
         return f'Grid data: TILES={self.TILES}, GRID_SIZE={self.GRID_SIZE}'
     

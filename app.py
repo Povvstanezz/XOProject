@@ -8,6 +8,9 @@ from gui import Button
 
 pygame.init()
 
+
+
+games_state = False
 screen = pygame.display.set_mode((640,480))
 bgcolor = (179, 180, 181)
 screen.fill(bgcolor)
@@ -21,13 +24,11 @@ grid_surface.fill(bgcolor)
 cursor_surface = pygame.Surface((grid.STEP_SIZE_X, grid.STEP_SIZE_Y))
 
 start_game_screen_surface = pygame.Surface(screen.get_size())
-# start_game_screen_surface.fill((100, 100, 100))
-btn_surface = Button().get_button_surface()
-btn = Button()
-btn_start_pos = screen.get_size()[0]/2-btn_surface.get_size()[0]/2, screen.get_size()[1]/2-btn_surface.get_size()[1]/2
-# btn_size = btn.get_size()
+start_game_screen_surface.fill((100, 100, 100))
 
-# btn_end_pos = btn_start_pos[0] + btn_size[0], btn_start_pos[1] + btn_size[1]
+btn = Button()
+btn_surface = btn.get_button_surface()
+btn_start_pos = screen.get_size()[0]/2-btn_surface.get_size()[0]/2, screen.get_size()[1]/2-btn_surface.get_size()[1]/2
 
 def surfaces_update():
     
@@ -40,8 +41,14 @@ def surfaces_update():
     y1 = cursor_marker[0][1] - 1
     grid_surface.blit(cursor_surface, (x1,y1))
     main_surface.blit(start_game_screen_surface, (0,0))
-    start_game_screen_surface.blit(btn_surface, btn_start_pos)
-    
+    state = games_state
+    if state:
+        start_game_screen_surface.set_alpha(0)
+    else:
+        start_game_screen_surface.set_alpha(255)
+        start_game_screen_surface.blit(btn_surface, btn_start_pos)
+        main_surface.blit(start_game_screen_surface, (0,0))
+        
     pass
 
 #Всё отлично
@@ -142,6 +149,9 @@ player_index = 0
 
 def win_game(player):
     print(f'Player:{player[0]} Win game!')
+    global games_state
+    games_state = False
+    grid.clear_tiles_data_list()
     pass
 
 #Ход игрока
@@ -163,14 +173,12 @@ def player_turn(pos):
 
 run = True
 win = False
-game_state = False
-
 
 def get_start_game_screen():
     surfaces_update()
-    print('!')
 
-if not game_state:
+
+if not games_state:
     get_start_game_screen()
     
 start_game = False
@@ -186,9 +194,8 @@ while run:
             mouse_pos = [mouse_pos[0]-50, mouse_pos[1]-50]
             grid.get_cursor(mouse_pos)
 
-            if btn.on_mouse_motion(btn_start_pos, pygame.mouse.get_pos()):
-                btn.mouse_over()
-                surfaces_update()
+            if btn.on_mouse_over(btn_start_pos, pygame.mouse.get_pos()):
+                pass
             
         norm_X, norm_Y = DRAW_DATA['cursor']
 
@@ -203,24 +210,23 @@ while run:
                 move_cursor(norm_X,norm_Y + 1)
             elif event.key == pygame.K_SPACE:
                 pass
-           
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
             mouse_pos = [mouse_pos[0]-50, mouse_pos[1]-50]
             tile = grid.get_cursor(mouse_pos)
+        
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                btn.click(btn_start_pos, pygame.mouse.get_pos())
+                games_state = True
 
             if not win:
                 player_turn(tile)
             
-            mouse_pos = pygame.mouse.get_pos()
-    
-            # start_game = btn.on_mouse_motion(btn_start_pos, mouse_pos)
-
             if start_game:
                 print(True)
            
-                
- 
     draw_data()
     grid.update()       
     pygame.display.update()
